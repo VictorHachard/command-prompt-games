@@ -1,5 +1,3 @@
-from tkinter import *
-
 class Sudoku:
 
     def __init__(self):
@@ -15,6 +13,21 @@ class Sudoku:
         for row in range(9):
             for column in range(9):
                 res += str(self.list[row][column]) if self.list[row][column] != -1 else "."
+                if (not (column+1)%3 == 0):
+                    res += " "
+                elif ((column+1)%3 == 0 and column < 8):
+                    res += "|"
+            res += "\n-----+-----+-----\n" if (row+1)%3 == 0 and row < 8 else "\n"
+        print(res)
+
+    '''
+    Print the sudoku
+    '''
+    def toString(self, list):
+        res = ""
+        for row in range(9):
+            for column in range(9):
+                res += str(list[row][column]) if list[row][column] != -1 else "."
                 if (not (column+1)%3 == 0):
                     res += " "
                 elif ((column+1)%3 == 0 and column < 8):
@@ -45,7 +58,7 @@ class Sudoku:
     arg column => the index of the column between 0 and 8
     arg element => the number to remove
     '''
-    def remove(self, row, column, element):
+    def remove(self, row, column):
         if (column < 0 or column >= 9 or row < 0 or row >= 9):
             print("the number of column or row you enter is not correct " + str(column) + ", " + str(row) + ", enter a number between 0 and 8")
             return
@@ -83,10 +96,10 @@ class Sudoku:
     arg list => the sudoku
     arg row => the index of the row between 0 and 2
     arg column => the index of the column between 0 and 2
-    return => a 2D 3*3 list
+    return => a 9 length list
     '''
     def getCell(self, list, row, column):
-        res = [[-1]*3,[-1]*3,[-1]*3]
+        res = [-1]*9
         offsetRow = self.const2.get(row, -1)
         offsetColumn = self.const2.get(column, -1)
         if (offsetRow == -1):
@@ -95,9 +108,11 @@ class Sudoku:
         if (offsetColumn == -1):
             print("the number of column you enter is not correct " + str(column)  + ", enter a number between 0 and 2")
             return
+        i = 0
         for row in range(3):
             for column in range(3):
-                res[row][column] = list[row+offsetRow][column+offsetColumn]
+                res[i] = list[row+offsetRow][column+offsetColumn]
+                i += 1
         return res
 
     '''
@@ -123,7 +138,10 @@ class Sudoku:
                 element = list[row][column]
                 if (element == -1):
                     return False
-                elif (not self.isValideToPlace(list, element, row, column)):
+                list[row][column] = -1
+                bool = not self.isValideToPlace(list, element, row, column)
+                list[row][column] = element
+                if (bool):
                     return False
         return True
 
@@ -144,15 +162,15 @@ class Sudoku:
         return True
 
     '''
-    Return
+    Return the list with shure completed value
     arg list => the sudoku to resolve
-    return =>
+    return => a 2D 9*9 list
     '''
     def preSolve(self, list):
         for row in range(9):
             for column in range(9):
                 if (list[row][column] == -1):
-                    nbr = 0;
+                    nbr = 0
                     valueToPlace = 0
                     for value in range(1,10):
                         if (self.isValideToPlace(list, value, row, column)):
@@ -163,6 +181,7 @@ class Sudoku:
         return list
 
     '''
+    NOT WORKING
     Return
     arg list => the sudoku to resolve
     return =>
@@ -179,14 +198,7 @@ class Sudoku:
         return listToDestroy
 
 if __name__ == '__main__':
-
-    fenetre = Tk()
-
-    label = Label(fenetre, text="Hello World")
-    label.pack()
-
-    fenetre.mainloop()
-
+    
     test = Sudoku()
     #init
     test.add(0,1,4)
@@ -225,7 +237,8 @@ if __name__ == '__main__':
     test.add(8,4,9)
     test.add(8,6,1)
     test.add(8,7,3)
-    test.toString()
+    test.toString(test.list)
+
     '''while True:
         x = input("row:")
         y = input("col:")
@@ -233,6 +246,8 @@ if __name__ == '__main__':
         test.add(int(x),int(y),int(z))
         test.toString()'''
 
-    print(test.solve(test.list))
-
-    test.toString()
+    test.toString(test.preSolve(test.list))
+    test.toString(test.preSolve(test.list))
+    test.toString(test.preSolve(test.list))
+    test.toString(test.preSolve(test.list))
+    print(test.isValid(test.list))
