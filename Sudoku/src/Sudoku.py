@@ -188,17 +188,30 @@ class Sudoku:
     '''
     def solve(self, list):
         listToDestroy = self.copy(list)
-        listToDestroy = self.preSolve(listToDestroy) #Place number where there is juste one possibility
+        #for i in range(10):
+            #listToDestroy = self.preSolve(listToDestroy) #Place number where there is juste one possibility
         for row in range(9):
             for column in range(9):
                 if (listToDestroy[row][column] == -1):
                     for value in range(1,10):
-                        if (self.isValideToPlace(listToDestroy, value, row, column)):
-                            listToDestroy[row][column] = value
+                        if (self.isValideToPlace(list, value, row, column)):
+                            boll = True
+                            cellTab = self.getCell(list, self.const1.get(row, -1), self.const1.get(column, 0))
+                            for cell in range(len(cellTab)):
+                                if (cellTab[cell] == -1):
+                                    columnOccurrences = self.getColumn(list, column).count(value)
+                                    rowOccurrences = self.getRow(list, row).count(value)
+                                    if (columnOccurrences >= 1 or rowOccurrences >= 1):
+                                        boll =+ True
+                                    else:
+                                        boll =+ False
+                            if (boll):
+                                listToDestroy[row][column] = value
+                                break
         return listToDestroy
 
 if __name__ == '__main__':
-    
+
     test = Sudoku()
     #init
     test.add(0,1,4)
