@@ -34,7 +34,6 @@ def askLetterAndHandle(actualWord):
             actualWord = ''.join(new)
     else:
         life += 1
-        print(life)
     print("Actual word: " + actualWord)
     hangman(life)
     return actualWord
